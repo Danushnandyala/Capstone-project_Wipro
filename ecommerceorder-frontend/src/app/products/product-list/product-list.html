@@ -1,0 +1,46 @@
+<div class="container" style="padding: 20px;">
+    <h2>Product Management</h2>
+
+    <table mat-table [dataSource]="products" class="mat-elevation-z8" style="width: 100%;">
+
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *mat-header-cell> ID </th>
+            <td mat-cell *mat-cell="let element"> {{element.product_id}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *mat-header-cell> Name </th>
+            <td mat-cell *mat-cell="let element"> {{element.name}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="description">
+            <th mat-header-cell *mat-header-cell> Description </th>
+            <td mat-cell *mat-cell="let element"> {{element.description}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="price">
+            <th mat-header-cell *mat-header-cell> Price </th>
+            <td mat-cell *mat-cell="let element"> {{element.price | currency}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="stockQuantity">
+            <th mat-header-cell *mat-header-cell> Stock </th>
+            <td mat-cell *mat-cell="let element"> {{element.stock_quantity}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *mat-header-cell> Actions </th>
+            <td mat-cell *mat-cell="let element">
+                <button mat-icon-button color="primary"
+                    (click)="addToCart(element)"><mat-icon>shopping_cart</mat-icon></button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *mat-header-rowDef="displayedColumns"></tr>
+        <tr mat-row *mat-rowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <div *ngIf="products.length === 0" class="alert alert-info mt-3">
+        No products available or loading...
+    </div>
+</div>

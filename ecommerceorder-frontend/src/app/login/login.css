@@ -1,0 +1,36 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    margin: 0;
+}
+
+.login-box {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    width: 350px;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+.error {
+    color: #dc3545;
+    text-align: center;
+}
+
+.demo-creds {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #666;
+    background: #f5f5f5;
+    padding: 0.5rem;
+    border-radius: 4px;
+}

@@ -1,0 +1,44 @@
+<div class="container mt-4">
+    <h2>My Orders</h2>
+
+    <div *ngIf="loading" class="text-center">Loading...</div>
+
+    <table class="table table-striped" *ngIf="!loading && orders.length > 0">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Items</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let order of orders">
+                <td>{{ order.order_id }}</td>
+                <td>{{ order.orderDate | date:'medium' }}</td>
+                <td>
+                    <span [class.badge]="true" [class.bg-success]="order.status === 'COMPLETED'"
+                        [class.bg-warning]="order.status === 'PENDING'">
+                        {{ order.status }}
+                    </span>
+                </td>
+                <td>
+                    <!-- Assuming order has items or we need to fetch them. 
+                If order object hierarchy is Order -> OrderItems, we display here. 
+                If flattened, we adjust. 
+                Based on 'hdaY.ts', it just displayed 'orders'. -->
+                    {{ order.items?.length || 0 }} items
+                </td>
+                <td>
+                    <!-- calculate total if available -->
+                    \${{ order.totalAmount || 0 }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div *ngIf="!loading && orders.length === 0" class="alert alert-info">
+        You have no orders placed yet. <a routerLink="/products/product-list">Go shopping!</a>
+    </div>
+</div>

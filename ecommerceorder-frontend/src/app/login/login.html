@@ -1,0 +1,23 @@
+<div class="login-container">
+    <div class="login-box">
+        <h2>E-Commerce Store</h2>
+        <form (ngSubmit)="login()">
+            <div class="form-group mb-3">
+                <label>Username:</label>
+                <input type="text" [(ngModel)]="username" name="username" required class="form-control">
+            </div>
+            <div class="form-group mb-3">
+                <label>Password:</label>
+                <input type="password" [(ngModel)]="password" name="password" required class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary w-100" [disabled]="loading">
+                {{ loading ? 'Logging in...' : 'Login' }}
+            </button>
+            <p *ngIf="error" class="error mt-2">{{ error }}</p>
+        </form>
+        <p class="demo-creds mt-3">
+            Demo: user/password (USER) or admin/admin123 (ADMIN)
+        </p>
+        <p class="mt-2 text-center">No account? <a href="/register" routerLink="/register">Register here</a></p>
+    </div>
+</div>
