@@ -28,10 +28,24 @@ export class OrderService {
     }
 
     getAllOrders(): Observable<any[]> {
-        return this.http.get<any[]>(`${this.apiUrl}/admin/orders`, { headers: this.getAuthHeaders() });
+        return this.http.get<any[]>(`${this.apiUrl}/orders`, { headers: this.getAuthHeaders() });
     }
 
-    placeOrder(userId: number, productId: number, quantity: number): Observable<any> {
-        return this.http.post(`${this.apiUrl}/orders/place?userId=${userId}&productId=${productId}&quantity=${quantity}`, {}, { headers: this.getAuthHeaders() });
+    placeOrder(orderRequest: { userId: number, items: { productId: number, quantity: number }[] }): Observable<any> {
+        return this.http.post(`${this.apiUrl}/orders/place`, orderRequest, {
+            headers: this.getAuthHeaders(),
+            responseType: 'text'
+        });
+    }
+
+    updateStatus(orderId: number, status?: string, paymentStatus?: string): Observable<any> {
+        let params = {};
+        if (status) params = { ...params, status };
+        if (paymentStatus) params = { ...params, paymentStatus };
+
+        return this.http.put(`${this.apiUrl}/orders/update/${orderId}`, null, {
+            headers: this.getAuthHeaders(),
+            params: params
+        });
     }
 }

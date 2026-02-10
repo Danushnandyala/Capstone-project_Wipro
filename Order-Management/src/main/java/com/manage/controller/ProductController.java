@@ -24,7 +24,7 @@ public class ProductController {
 
     // Create a Product
     @PostMapping
-    public ResponseEntity<?> createProduct(@RequestBody Product product) {
+    public ResponseEntity<?> createProduct(@jakarta.validation.Valid @RequestBody Product product) {
         try {
             product.setProduct_id(null); // Ensure Insert, not Update
             Product savedProduct = productRepository.save(product);
@@ -42,7 +42,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Integer id) {
+    public ResponseEntity<Product> getProductById(@PathVariable("id") Integer id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(
                         () -> new com.manage.exception.ResourceNotFoundException("Product not found with id: " + id));
@@ -50,7 +50,8 @@ public class ProductController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable Integer id, @RequestBody Product productDetails) {
+    public ResponseEntity<?> updateProduct(@PathVariable("id") Integer id,
+            @jakarta.validation.Valid @RequestBody Product productDetails) {
         try {
             Product product = productRepository.findById(id)
                     .orElseThrow(() -> new com.manage.exception.ResourceNotFoundException(
@@ -72,7 +73,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Object> deleteProduct(@PathVariable Integer id) {
+    public ResponseEntity<Object> deleteProduct(@PathVariable("id") Integer id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(
                         () -> new com.manage.exception.ResourceNotFoundException("Product not found with id: " + id));

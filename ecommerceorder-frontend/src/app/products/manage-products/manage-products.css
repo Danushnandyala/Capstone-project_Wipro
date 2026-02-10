@@ -1,1 +1,37 @@
-/* Manage Products CSS */
+.form-label.sm-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+}
+
+.btn-action {
+    width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-weight: 500;
+}
+
+.card {
+    border-radius: 10px;
+}
+
+.table th {
+    font-weight: 600;
+    color: #495057;
+}
+
+.bg-success-subtle {
+    background-color: #d1e7dd;
+}
+
+.bg-danger-subtle {
+    background-color: #f8d7da;
+}
+
+.form-container {
+    min-height: 0;
+    transition: all 0.3s ease-in-out;
+}

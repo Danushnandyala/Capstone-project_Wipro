@@ -24,17 +24,17 @@ public class OrderItemController {
 
     // 2. Get details for a specific Order (View Order Details)
     @GetMapping("/order/{orderId}")
-    public ResponseEntity<List<OrderItem>> getItemsByOrderId(@PathVariable Integer orderId) {
+    public ResponseEntity<List<OrderItem>> getItemsByOrderId(@PathVariable("orderId") Integer orderId) {
         List<OrderItem> items = orderItemRepository.findAll().stream()
                 .filter(item -> item.getOrder().getOrder_id().equals(orderId))
                 .collect(Collectors.toList());
-        
+
         return items.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(items);
     }
 
     // 3. Get a single item detail by its specific ID
     @GetMapping("/{id}")
-    public ResponseEntity<OrderItem> getOrderItemById(@PathVariable Integer id) {
+    public ResponseEntity<OrderItem> getOrderItemById(@PathVariable("id") Integer id) {
         return orderItemRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

@@ -18,6 +18,7 @@ export class RegisterComponent {
     role = 'user'; // default role
     errorMessage = '';
     successMessage = '';
+    loading = false;
 
     constructor(private authService: AuthService, private router: Router) { }
 
@@ -27,6 +28,10 @@ export class RegisterComponent {
             this.errorMessage = 'Admin username/email cannot be used.';
             return;
         }
+
+        this.loading = true;
+        this.errorMessage = '';
+        this.successMessage = '';
 
         const userData = {
             username: this.username,
@@ -40,14 +45,23 @@ export class RegisterComponent {
         // If not, I'll mock it or add it.
 
         this.authService.register(userData).subscribe({
-            next: () => {
-                this.successMessage = 'Registered successfully!';
+            next: (response: any) => {
+                this.successMessage = response.message || 'Registration successful! Redirecting to login...';
+                this.loading = false;
                 setTimeout(() => {
                     this.router.navigate(['/login']);
-                }, 1500);
+                }, 2000);
             },
-            error: () => {
-                this.errorMessage = 'Registration failed. Try again.';
+            error: (err) => {
+                this.loading = false;
+                console.error('Registration error:', err);
+                if (err.error && err.error.message) {
+                    this.errorMessage = err.error.message;
+                } else if (typeof err.error === 'string') {
+                    this.errorMessage = err.error;
+                } else {
+                    this.errorMessage = 'Registration failed. Please try again.';
+                }
             }
         });
     }

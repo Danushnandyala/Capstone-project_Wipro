@@ -24,7 +24,7 @@ public class Order {
 	private Double total_amount;
 	private LocalDateTime order_date;
 
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private java.util.List<OrderItem> orderItems;
 
 	public Integer getOrder_id() {

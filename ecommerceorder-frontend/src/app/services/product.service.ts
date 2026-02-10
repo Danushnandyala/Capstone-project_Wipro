@@ -25,10 +25,10 @@ export class ProductService {
     }
 
     updateProduct(product: Product): Observable<Product> {
-        return this.http.put<Product>(`${this.apiUrl}/${product.product_id}`, product);
+        return this.http.put<Product>(`${this.apiUrl}/update/${product.product_id}`, product);
     }
 
     deleteProduct(id: number): Observable<void> {
-        return this.http.delete<void>(`${this.apiUrl}/${id}`);
+        return this.http.delete<void>(`${this.apiUrl}/delete/${id}`);
     }
 }

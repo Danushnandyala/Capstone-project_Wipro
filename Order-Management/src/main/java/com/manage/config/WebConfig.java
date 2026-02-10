@@ -11,7 +11,8 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:4200", "https://ecom-frontend-v2.azurewebsites.net")
+                .allowedOrigins("http://localhost:4200", "http://localhost:80", "http://127.0.0.1:4200",
+                        "http://127.0.0.1:80")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);

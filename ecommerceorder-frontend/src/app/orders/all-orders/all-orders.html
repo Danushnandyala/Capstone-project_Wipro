@@ -1,6 +1,11 @@
 <div class="admin-container">
     <h2>Admin Dashboard - All Orders</h2>
 
+    <div class="search-bar mb-4">
+        <input type="text" [(ngModel)]="searchTerm" placeholder="Filter by User ID or Order ID..."
+            class="form-control w-50 mx-auto">
+    </div>
+
     <div *ngIf="loading" class="loading">Loading orders...</div>
     <div *ngIf="error" class="error">{{ error }}</div>
 
@@ -11,7 +16,7 @@
         </div>
         <div class="stat-card">
             <div class="stat-label">Total Revenue</div>
-            <div class="stat-value">\${{ totalRevenue | number:'1.2-2' }}</div>
+            <div class="stat-value">₹{{ totalRevenue | number:'1.2-2' }}</div>
         </div>
         <div class="stat-card">
             <div class="stat-label">Total Items Sold</div>
@@ -25,26 +30,59 @@
                 <tr>
                     <th>Order ID</th>
                     <th>User ID</th>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Subtotal</th>
+                    <th>Date</th>
+                    <th>Total Length</th>
+                    <th>Total Amount</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let item of orders">
-                    <td>{{ item.order_id }}</td>
-                    <td>{{ item.order?.user?.user_id || 'N/A' }}</td>
-                    <td>{{ item.product?.name || 'Product #' + item.product?.product_id }}</td>
-                    <td>{{ item.quantity }}</td>
-                    <td>\${{ item.price }}</td>
-                    <td>\${{ item.quantity * item.price }}</td>
+                <tr *ngFor="let order of filteredOrders">
+                    <td>{{ order.order_id }}</td>
+                    <td>{{ order.user?.user_id || order.user?.username || 'N/A' }}</td>
+                    <td>{{ order.order_date | date:'short' }}</td>
+                    <td>{{ order.orderItems?.length || 0 }} items</td>
+                    <td>₹{{ order.total_amount | number:'1.2-2' }}</td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge" [ngClass]="{
+                                'bg-success': order.status === 'COMPLETED' || order.status === 'DELIVERED',
+                                'bg-warning': order.status === 'PENDING' || order.status === 'PLACED',
+                                'bg-info': order.status === 'SHIPPED',
+                                'bg-danger': order.status === 'CANCELLED'
+                            }">
+                                {{ order.status }}
+                            </span>
+
+                            <button class="btn btn-sm btn-outline-info"
+                                *ngIf="order.status === 'PLACED' || order.status === 'PENDING'"
+                                (click)="shipOrder(order.order_id)">
+                                Ship
+                            </button>
+                            <button class="btn btn-sm btn-outline-success" *ngIf="order.status === 'SHIPPED'"
+                                (click)="deliverOrder(order.order_id)">
+                                Deliver
+                            </button>
+                        </div>
+                        <div class="mt-1 d-flex align-items-center gap-2">
+                            <span class="badge"
+                                [ngClass]="order.payment_status === 'COMPLETED' ? 'bg-success' : 'bg-secondary'">
+                                Payment: {{ order.payment_status }}
+                            </span>
+                            <button class="btn btn-sm btn-link p-0 text-success"
+                                *ngIf="order.payment_status !== 'COMPLETED'" (click)="markAsPaid(order.order_id)">
+                                Mark as Paid
+                            </button>
+                        </div>
+                    </td>
                 </tr>
             </tbody>
         </table>
     </div>
 
-    <div *ngIf="!loading && orders.length === 0" class="no-orders">
-        No orders yet.
+    <div *ngIf="!loading && orders.length === 0" class="no-orders text-center py-5">
+        <i class="bi bi-inbox display-1 text-muted mb-3"></i>
+        <h4 class="text-secondary">No orders found</h4>
+        <p class="text-muted">There are no orders to display at this time.</p>
     </div>
 </div>

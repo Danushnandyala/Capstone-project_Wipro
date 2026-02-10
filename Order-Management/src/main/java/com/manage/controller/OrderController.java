@@ -28,13 +28,14 @@ public class OrderController {
     }
 
     @GetMapping("/user/{userId}")
-    public java.util.List<com.manage.model.Order> getOrdersByUser(@PathVariable Integer userId) {
+    public java.util.List<com.manage.model.Order> getOrdersByUser(@PathVariable("userId") Integer userId) {
         return orderService.getOrdersByUser(userId);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateOrderStatus(@PathVariable Integer id, @RequestParam(required = false) String status,
-            @RequestParam(required = false) String paymentStatus) {
+    public ResponseEntity<?> updateOrderStatus(@PathVariable("id") Integer id,
+            @RequestParam(name = "status", required = false) String status,
+            @RequestParam(name = "paymentStatus", required = false) String paymentStatus) {
         try {
             return ResponseEntity.ok(orderService.updateStatus(id, status, paymentStatus));
         } catch (Exception e) {

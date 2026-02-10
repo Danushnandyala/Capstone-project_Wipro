@@ -1,67 +1,99 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// import { ApiService } from '../../services/api.service'; // Removed unused import
+import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { OrderItem } from '../../models/order-item.model';
-import { User } from '../../models/user.model';
-
-// DSfH.ts used ApiService. I need to make sure I have ApiService or use OrderItemService.
-// KB2X.ts is OrderItemService and has getAllOrderItems(). 
-// I will use OrderItemService instead of ApiService to be consistent with the restored services.
-
-import { OrderItemService } from '../../services/order-item.service';
+import { OrderService } from '../../services/order.service';
 
 @Component({
     selector: 'app-all-orders',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, FormsModule],
     templateUrl: './all-orders.html',
     styleUrls: ['./all-orders.css']
 })
 export class AllOrdersComponent implements OnInit {
-    orders: OrderItem[] = [];
+    orders: any[] = [];
     loading = true;
     error = '';
-    // user: User | null = null; // Admin check likely handled by Guard, but can keep for UI
+    searchTerm: string = '';
 
-    get groupedOrders() {
-        const grouped: { [key: number]: any } = {};
-        this.orders.forEach(item => {
-            if (!grouped[item.order_id!]) {
-                grouped[item.order_id!] = { items: [] };
-            }
-            grouped[item.order_id!].items.push(item);
-        });
-        return Object.values(grouped);
-    }
-
-    get totalRevenue(): number {
-        return this.orders.reduce((sum, item) => sum + (item.quantity * item.price), 0);
-    }
-
-    get totalItems(): number {
-        return this.orders.reduce((sum, item) => sum + item.quantity, 0);
-    }
-
-    constructor(private orderItemService: OrderItemService, private authService: AuthService) { }
+    constructor(private orderService: OrderService, private authService: AuthService) { }
 
     ngOnInit() {
-        // this.user = this.authService.getUser(); // AuthService might not have getUser() anymore, check auth.service.ts
-        // Assuming admin guard protects this route.
         this.loadOrders();
     }
 
+    get filteredOrders() {
+        if (!this.searchTerm) {
+            return this.orders;
+        }
+        const term = this.searchTerm.toLowerCase();
+        return this.orders.filter(order =>
+            order.user?.username?.toLowerCase().includes(term) ||
+            order.user?.user_id?.toString().includes(term) ||
+            order.order_id?.toString().includes(term)
+        );
+    }
+
+    get groupedOrders() {
+        return this.filteredOrders;
+    }
+
+    get totalRevenue(): number {
+        return this.filteredOrders.reduce((sum, order) => sum + (order.total_amount || 0), 0);
+    }
+
+    get totalItems(): number {
+        return this.filteredOrders.reduce((sum, order) => sum + (order.orderItems?.length || 0), 0);
+    }
+
     loadOrders() {
-        this.orderItemService.getAllOrderItems().subscribe({
-            next: (data) => {
+        this.orderService.getAllOrders().subscribe({
+            next: (data: any[]) => {
                 this.orders = data;
                 this.loading = false;
             },
-            error: (error) => {
+            error: (error: any) => {
                 this.error = 'Failed to load orders';
                 this.loading = false;
                 console.error(error);
             }
         });
+    }
+
+    shipOrder(orderId: number) {
+        if (confirm('Are you sure you want to ship this order?')) {
+            this.orderService.updateStatus(orderId, 'SHIPPED', undefined).subscribe({
+                next: () => {
+                    alert('Order status updated to SHIPPED');
+                    this.loadOrders();
+                },
+                error: (err: any) => console.error(err)
+            });
+        }
+    }
+
+    deliverOrder(orderId: number) {
+        if (confirm('Are you sure you want to deliver this order?')) {
+            this.orderService.updateStatus(orderId, 'DELIVERED', undefined).subscribe({
+                next: () => {
+                    alert('Order status updated to DELIVERED');
+                    this.loadOrders();
+                },
+                error: (err: any) => console.error(err)
+            });
+        }
+    }
+
+    markAsPaid(orderId: number) {
+        if (confirm('Are you sure you want to mark this order as PAID?')) {
+            this.orderService.updateStatus(orderId, undefined, 'COMPLETED').subscribe({
+                next: () => {
+                    alert('Payment status updated successfully');
+                    this.loadOrders();
+                },
+                error: (err: any) => console.error(err)
+            });
+        }
     }
 }

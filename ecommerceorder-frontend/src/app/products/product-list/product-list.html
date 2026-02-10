@@ -1,46 +1,46 @@
-<div class="container" style="padding: 20px;">
-    <h2>Product Management</h2>
+<div class="product-container">
+    <h2 class="mb-4">Available Products</h2>
 
-    <table mat-table [dataSource]="products" class="mat-elevation-z8" style="width: 100%;">
+    <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
 
-        <ng-container matColumnDef="id">
-            <th mat-header-cell *mat-header-cell> ID </th>
-            <td mat-cell *mat-cell="let element"> {{element.product_id}} </td>
-        </ng-container>
+    <div *ngIf="!loading && products.length === 0" class="alert alert-info">
+        No products available at the moment.
+    </div>
 
-        <ng-container matColumnDef="name">
-            <th mat-header-cell *mat-header-cell> Name </th>
-            <td mat-cell *mat-cell="let element"> {{element.name}} </td>
-        </ng-container>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4" *ngIf="!loading && products.length > 0">
+        <div class="col" *ngFor="let product of products">
+            <div class="card h-100 shadow-sm product-card border-0">
+                <div class="image-container">
+                    <img [src]="product.imageUrl || 'https://placehold.co/600x400?text=No+Image'"
+                        class="card-img-top product-img" [alt]="product.name"
+                        onerror="this.src='https://placehold.co/600x400?text=No+Image'">
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text text-muted flex-grow-1">{{ product.description }}</p>
 
-        <ng-container matColumnDef="description">
-            <th mat-header-cell *mat-header-cell> Description </th>
-            <td mat-cell *mat-cell="let element"> {{element.description}} </td>
-        </ng-container>
+                    <div class="d-flex justify-content-between align-items-center mt-auto mb-3">
+                        <span class="h5 mb-0 text-primary">₹{{ product.price | number:'1.2-2' }}</span>
+                        <span class="badge"
+                            [ngClass]="product.stock_quantity > 0 ? 'bg-light text-dark' : 'bg-danger text-white'">
+                            {{ product.stock_quantity > 0 ? 'Stock: ' + product.stock_quantity : 'Out of Stock' }}
+                        </span>
+                    </div>
 
-        <ng-container matColumnDef="price">
-            <th mat-header-cell *mat-header-cell> Price </th>
-            <td mat-cell *mat-cell="let element"> {{element.price | currency}} </td>
-        </ng-container>
+                    <button class="btn btn-primary w-100" (click)="addToCart(product)"
+                        *ngIf="product.stock_quantity > 0">
+                        <i class="bi bi-cart-plus me-2"></i>Add to Cart
+                    </button>
 
-        <ng-container matColumnDef="stockQuantity">
-            <th mat-header-cell *mat-header-cell> Stock </th>
-            <td mat-cell *mat-cell="let element"> {{element.stock_quantity}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="actions">
-            <th mat-header-cell *mat-header-cell> Actions </th>
-            <td mat-cell *mat-cell="let element">
-                <button mat-icon-button color="primary"
-                    (click)="addToCart(element)"><mat-icon>shopping_cart</mat-icon></button>
-            </td>
-        </ng-container>
-
-        <tr mat-header-row *mat-header-rowDef="displayedColumns"></tr>
-        <tr mat-row *mat-rowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-
-    <div *ngIf="products.length === 0" class="alert alert-info mt-3">
-        No products available or loading...
+                    <div class="text-danger fw-bold text-center" *ngIf="product.stock_quantity <= 0">
+                        <i class="bi bi-exclamation-circle me-1"></i>Currently Unavailable
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

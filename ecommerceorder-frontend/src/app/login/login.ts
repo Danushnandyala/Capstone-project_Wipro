@@ -28,15 +28,19 @@ export class LoginComponent {
                 this.loading = false;
                 // Redirect based on role
                 if (user.role === 'ADMIN') {
-                    this.router.navigate(['/orders/all-orders']); // Admin landing
+                    this.router.navigate(['/admin']); // Admin Dashboard
                 } else {
-                    this.router.navigate(['/products/product-list']); // User landing
+                    this.router.navigate(['/user']); // User Dashboard
                 }
             },
-            error: (error) => {
+            error: (err) => {
+                console.error(err);
+                if (err.error && err.error.message) {
+                    this.error = err.error.message;
+                } else {
+                    this.error = 'Invalid username or password';
+                }
                 this.loading = false;
-                this.error = 'Invalid credentials';
-                console.error(error);
             }
         });
     }

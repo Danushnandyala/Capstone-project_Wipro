@@ -1,0 +1,77 @@
+<div class="cart-container">
+    <h2>Your Shopping Cart</h2>
+
+    <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+    <div *ngIf="cartItems.length === 0" class="empty-cart text-center py-5">
+        <i class="bi bi-cart-x display-1 text-muted mb-3"></i>
+        <h3 class="text-secondary">Your cart is empty</h3>
+        <p class="mb-4 text-muted">Looks like you haven't added anything to your cart yet.</p>
+    </div>
+
+    <div *ngIf="cartItems.length > 0">
+        <div class="cart-items">
+            <div class="cart-item" *ngFor="let item of cartItems">
+                <div class="item-details">
+                    <h5 class="product-name">{{ item.name }}</h5>
+                    <p class="price">₹{{ item.price }}</p>
+                </div>
+                <div class="item-controls">
+                    <button class="btn btn-sm btn-outline-secondary" (click)="decrease(item)">-</button>
+                    <span class="qty">{{ item.quantity }}</span>
+                    <button class="btn btn-sm btn-outline-secondary" (click)="increase(item)">+</button>
+                    <button class="btn btn-sm btn-danger ms-3" (click)="remove(item)">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+                <div class="item-total">
+                    ₹{{ item.price * item.quantity | number:'1.2-2' }}
+                </div>
+            </div>
+        </div>
+
+        <div class="cart-summary">
+            <h3>Total: ₹{{ total | number:'1.2-2' }}</h3>
+            <button class="btn btn-success w-100 py-2 mt-3" (click)="checkout()" [disabled]="loading">
+                {{ loading ? 'Processing...' : 'Checkout' }}
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal-backdrop" *ngIf="showConfirmation">
+    <div class="modal-content">
+        <h3>Confirm Order</h3>
+        <p>Do you want to place this order?</p>
+        <div class="modal-actions">
+            <button class="btn btn-secondary me-2" (click)="cancelOrder()">Cancel</button>
+            <button class="btn btn-primary" (click)="confirmOrder()">OK</button>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Instructions Modal -->
+<div class="modal-backdrop" *ngIf="showPayment">
+    <div class="modal-content">
+        <h3 class="mb-3">Payment Instructions</h3>
+        <div class="alert alert-info text-start">
+            <p class="mb-2"><strong>Step 1:</strong> Make payment to the UPI ID: <strong>merchant&#64;upi</strong></p>
+            <p class="mb-2"><strong>Step 2:</strong> Send a snapshot of the payment to:</p>
+            <ul class="mb-0">
+                <li>Mobile: <strong>+91 98765 43210</strong></li>
+                <li>Email: <strong>admin&#64;test.com</strong></li>
+            </ul>
+        </div>
+        <p class="text-muted small mb-4">Upon verification, we will update the payment status.</p>
+
+        <div class="modal-actions">
+            <button class="btn btn-secondary me-2" (click)="cancelOrder()" [disabled]="loading">Cancel</button>
+            <button class="btn btn-success" (click)="completePayment()" [disabled]="loading">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+                Payment Completed
+            </button>
+        </div>
+    </div>
+</div>
