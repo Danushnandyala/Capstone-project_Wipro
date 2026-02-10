@@ -37,7 +37,7 @@ jobs:
       - name: Build and push Frontend
         uses: docker/build-push-action@v5
         with:
-          context: ./ecommerceorder-frontend/ecommerceorder-frontend
-          file: ./ecommerceorder-frontend/ecommerceorder-frontend/Dockerfile
+          context: ./ecommerceorder-frontend
+          file: ./ecommerceorder-frontend/Dockerfile
           push: true
           tags: nandyalasivasaidanush/ecommerce-frontend:latest
