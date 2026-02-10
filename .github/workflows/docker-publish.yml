@@ -31,7 +31,7 @@ jobs:
           context: ./Order-Management
           file: ./Order-Management/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/ecommerce-backend:latest
+          tags: nandyalasivasaidanush/ecommerce-backend:latest
 
       # Build and Push Frontend
       - name: Build and push Frontend
@@ -40,4 +40,4 @@ jobs:
           context: ./ecommerceorder-frontend/ecommerceorder-frontend
           file: ./ecommerceorder-frontend/ecommerceorder-frontend/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/ecommerce-frontend:latest
+          tags: nandyalasivasaidanush/ecommerce-frontend:latest
